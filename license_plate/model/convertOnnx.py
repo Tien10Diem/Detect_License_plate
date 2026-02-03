@@ -12,7 +12,8 @@ def main():
         format="onnx",      # Onnx
         imgsz=640,          
         opset=12,           # version of onnx
-        simplify=True       # Tự động rút gọn đồ thị ONNX cho nhẹ
+        simplify=True,     
+        # half = True,  # giảm 1 nửa số bit
     )
 
 if __name__ == "__main__":

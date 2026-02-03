@@ -105,7 +105,7 @@ if __name__ == "__main__":
     ocr = LicensePlateOCR()
     
     # Test thử 1 ảnh
-    test_img = r"E:\Project_OCR\data\test_a\37L248972_20241221_164804.jpg" # Thay ảnh của bạn vào
+    test_img = r"C:\Users\ASUS\Hoc_DL\learning-DL\Detect_Lisence_plate\OCR\data\cropped\car_14.jpg" # Thay ảnh của bạn vào
     
     result = ocr.predict(test_img)
     print("="*30)
