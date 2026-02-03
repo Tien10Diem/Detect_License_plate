@@ -1,0 +1,8 @@
+path: license_plate/Vietnam-license-plate-1
+
+train: train/images
+val: valid/images    
+test: test/images
+
+names:
+  0: plate

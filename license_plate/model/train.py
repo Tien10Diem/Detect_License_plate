@@ -15,13 +15,13 @@ def args():
 if __name__ == "__main__":
 
     tasks.CBAM = CBAM
-    custom_yaml = r"license_plate\yolo26m_custom.yaml"
+    custom_yaml = r"license_plate\dataset\yolo26m_custom.yaml"
     model = YOLO(custom_yaml).load('yolo26m.pt')
 
     args = args()
 
     results = model.train(
-        data='license_plate\dataset.yaml',
+        data='license_plate\dataset\dataset.yaml',
         epochs=args.epochs,
         imgsz=args.imgsz,
         batch=args.batch,
