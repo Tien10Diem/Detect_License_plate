@@ -7,14 +7,12 @@ __pycache__/
 *.pyc
 
 
-data/
-*.jpg
-*.png
-*.txt
-*.csv
+# data/
+# *.jpg
+# *.png
+# *.txt
+# *.csv
 
-model/*.keras
-model/*.h5
 
 
 .vscode/
