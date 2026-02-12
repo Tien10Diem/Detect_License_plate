@@ -7,13 +7,14 @@ import re
 import argparse
 import onnxruntime as ort
 from paddleocr import PaddleOCR
-
+import easyocr
+ 
 def args():
     parser = argparse.ArgumentParser()
-    parser.add_argument('--vehicle', '-v', default= r'detect_vehicle\transfer_vehicle\best.onnx', type=str, help='model path')
+    parser.add_argument('--vehicle', '-v', default= r"C:\Users\ASUS\Downloads\best_vehicle.pt", type=str, help='model path')
     parser.add_argument('--license_plate', '-l', default= r'license_plate\runs\yolo26m_transfer\weights\best.onnx', type=str, help='model path')
     parser.add_argument('--ocr', '-o', default= r'cct-xs-v1-global-model', type=str, help='model path')
-    parser.add_argument('--path', '-p', default= r'Video xe máy - xe hơi chạy trên đường - YouTube.mp4', type=str, help='video path')
+    parser.add_argument('--path', '-p', default= r"Video xe máy - xe hơi chạy trên đường - YouTube.mp4", type=str, help='video path')
     parser.add_argument('--save_path', '-s', default= r'inf', type=str, help='video path')
     
     return parser.parse_args()
@@ -47,12 +48,37 @@ class detect:
                     
         
     def detect_vehicle(self, frame):
-        results = self.model_vehicle.predict(source=frame, conf=0.25, verbose=False)
+        results = self.model_vehicle.predict(source=frame, conf=0.45, verbose=False)
+        return results
+    
+    def tracker_vehicle(self, frame):
+        results = self.model_vehicle.track(source=frame, conf=0.15, verbose=False, persist=True, tracker="bytetrack.yaml")
         return results
     
     def ocr(self, plate_img):
-        pass
-        
+       
+        import cv2
+
+        reader = easyocr.Reader(['vi']) 
+        result = reader.readtext(plate_img)
+
+        # mat = cv2.imread(img_path)
+
+        boxes = [line[0] for line in result]
+        texts = [line[1] for line in result]
+        scores = [line[2] for line in result]
+
+        for box in boxes:
+            top_left     = (int(box[0][0]), int(box[0][1]))
+            bottom_right = (int(box[2][0]), int(box[2][1]))
+
+            cv2.rectangle(plate_img, top_left, bottom_right, (0, 255, 0), 2)
+
+        print(texts)
+        text = ' '.join(texts)
+        # cv2.imshow("OCR Result", plate_img)
+        # cv2.waitKey(0)
+        return text
     def detect_license_plate(self, frame):
         results = self.model_lp.predict(source=frame, conf=0.25, verbose=False)
         
@@ -67,8 +93,9 @@ class detect:
         
         return crop, (x1, y1, x2, y2)
     
+    
     def detect_all(self, frame):
-        results = self.detect_vehicle(frame)
+        results = self.tracker_vehicle(frame)
         for result in results:
             for box in result.boxes:
                 x1, y1, x2, y2 = box.xyxy[0].cpu().numpy().astype(int)

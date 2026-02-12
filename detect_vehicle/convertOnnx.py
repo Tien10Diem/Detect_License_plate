@@ -1,7 +1,7 @@
 from ultralytics import YOLO
 
 def main():
-    model_path = r"detect_vehicle\transfer_vehicle\best.pt"
+    model_path = r"detect_vehicle\transfer_vehicle\best3.pt"
     
     model = YOLO(model_path)
 

@@ -13,6 +13,7 @@ __pycache__/
 # *.png
 # *.txt
 # *.csv
+*.mp4
 
 OCR/data
 *.pt
