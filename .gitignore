@@ -5,5 +5,5 @@ data/Viet-Nam-OCR-plate-1
 data/Vietnam-license-plate-1
 data/YOLOv8-2-1
 
-env
+.env
 __pycache__
