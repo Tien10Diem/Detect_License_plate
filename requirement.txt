@@ -1,0 +1,7 @@
+roboflow
+python-dotenv
+ultralytics
+torch
+opencv-python
+pandas
+numpy
