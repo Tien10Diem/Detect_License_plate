@@ -1,6 +1,5 @@
 import torch
 import torch.nn as nn
-from ultralytics.nn.modules.conv import Conv
 
 class ChannelAttention(nn.Module):
     def __init__(self, in_planes, ratio=16):
@@ -8,7 +7,7 @@ class ChannelAttention(nn.Module):
         self.avg_pool = nn.AdaptiveAvgPool2d(1)
         self.max_pool = nn.AdaptiveMaxPool2d(1)
 
-        # MLP chia sẻ trọng số
+        # MLP 
         self.fc1 = nn.Conv2d(in_planes, in_planes // ratio, 1, bias=False)
         self.relu1 = nn.ReLU()
         self.fc2 = nn.Conv2d(in_planes // ratio, in_planes, 1, bias=False)
@@ -24,7 +23,6 @@ class ChannelAttention(nn.Module):
 class SpatialAttention(nn.Module):
     def __init__(self, kernel_size=7):
         super(SpatialAttention, self).__init__()
-        # Kernel 7 là chuẩn bài báo gốc, giúp nhìn vùng rộng
         self.conv1 = nn.Conv2d(2, 1, kernel_size, padding=kernel_size//2, bias=False)
         self.sigmoid = nn.Sigmoid()
 
@@ -45,6 +43,3 @@ class CBAM(nn.Module):
         x_out = self.channel_gate(x) * x
         x_out = self.spatial_gate(x_out) * x_out
         return x_out
-
-if __name__ == "__main__":
-    cbam = CBAM()

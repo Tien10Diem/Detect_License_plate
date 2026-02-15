@@ -1,22 +1,9 @@
-venv/
-env/
-.env
+weights/model_license_plate/license_plate
+weights/model_numbers/numbers
+weights/model_vehicle/vehicle
+data/Viet-Nam-OCR-plate-1
+data/Vietnam-license-plate-1
+data/YOLOv8-2-1
 
-
-__pycache__/
-*.pyc
-
-# runs
-
-# data/
-# *.jpg
-# *.png
-# *.txt
-# *.csv
-*.mp4
-
-OCR/data
-*.pt
-
-license_plate/Vietnam-license-plate-1
-.vscode/
+env
+__pycache__
