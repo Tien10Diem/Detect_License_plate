@@ -1,9 +1,0 @@
-roboflow
-ultralytics==8.4.9
-opencv-python
-tensorflow
-onnxruntime-gpu
-# xóa sau
-paddlepaddle 
-paddleocr
-langchain==0.1.0
