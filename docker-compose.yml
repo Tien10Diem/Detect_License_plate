@@ -40,4 +40,4 @@ services:
     stdin_open: true
     
     # CỐ ĐỊNH: Tự khởi động lại nếu hệ thống sập nguồn
-    restart: unless-stopped
+    restart: on-failure
