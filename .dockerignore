@@ -1,0 +1,10 @@
+src/pipeline/inference_teacher.py
+data
+sample
+weights/model_vehicle/vehicle
+weights/model_license_plate/license_plate
+weights/model_numbers/best_recognize_number.pt
+weights/model_numbers/numbers
+src/models/__pycache__
+.env
+

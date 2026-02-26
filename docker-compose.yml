@@ -1,0 +1,43 @@
+version: '3.8' # cố định
+
+services:
+  # tên project
+  LP_project:
+    
+    # build: context là vị trí chứa Dockerfile
+    build:
+      context: .
+      dockerfile: Dockerfile # Đổi nếu đặt tên khác cho Dockerfile
+
+    # [ĐỔI] Đặt tên Image để quản lý trong Docker Desktop
+    image: lp_project_v1
+    
+    command: [
+      "python", "src/pipeline/inference.py",
+      "--weights_vehicle", "weights/model_vehicle/vehicle_detector.onnx",
+      "--weights_license_plate", "weights/model_license_plate/plate_detector_best.onnx",
+      "--weights_character", "weights/model_numbers/best_recognize_number.onnx",
+      "--video_path", "sample/raw_video/video_cut.mp4",
+      "--output_path", "output/output.mp4"
+    ]
+    # [ĐỔI] Kết nối thư mục giữa Máy Win và Container Linux
+    volumes:
+      - ./sample:/lp/sample    # Kết nối dữ liệu đầu vào
+      - ./weights:/lp/weights  # Kết nối model (.pt)
+      - ./sample/output:/lp/output    # (Nên có) Nơi lưu kết quả sau khi chạy
+    
+    # CỐ ĐỊNH: Cấu hình chiếm quyền điều khiển GPU NVIDIA
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
+
+    # CỐ ĐỊNH: Giữ Terminal luôn mở để xem kết quả print()
+    tty: true
+    stdin_open: true
+    
+    # CỐ ĐỊNH: Tự khởi động lại nếu hệ thống sập nguồn
+    restart: unless-stopped
