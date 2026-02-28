@@ -2,6 +2,7 @@
 
 Đây là dự án toàn diện ứng dụng Computer Vision để phát hiện phương tiện, khoanh vùng biển số và nhận dạng các ký tự trên biển số từ video. Toàn bộ luồng xử lý (pipeline) được thiết kế tối ưu hiệu năng và đóng gói hoàn chỉnh bằng Docker.
 
+![Video Demo](sample/output/output.mp4)
 ## Tính năng kỹ thuật nổi bật
 
 - **Phát hiện & Theo dõi xe (Vehicle Detection & Tracking):** Ứng dụng mô hình YOLO26m kết hợp thuật toán ByteTrack để phát hiện và duy trì ID độc nhất cho từng phương tiện xuyên suốt video.
