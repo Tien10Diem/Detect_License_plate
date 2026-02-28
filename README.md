@@ -4,7 +4,7 @@ This is a comprehensive project applying Computer Vision to detect vehicles, loc
 
 ## Demo Video
 
-[Click here to watch the demo](https://raw.githubusercontent.com/Tien10Diem/Detect_License_plate/main/sample/output/output.mp4)
+[![Watch the demo](https://img.youtube.com/vi/VIDEO_ID/0.jpg)](https://youtu.be/ZiOYWaxIXFE)
 ## Key Technical Features
 
 - **Vehicle Detection & Tracking:** Utilizes the YOLO26m model combined with the ByteTrack algorithm to detect and maintain unique IDs for each vehicle throughout the video.
