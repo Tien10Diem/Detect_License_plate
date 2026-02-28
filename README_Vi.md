@@ -2,11 +2,10 @@
 
 Đây là dự án toàn diện ứng dụng Computer Vision để phát hiện phương tiện, khoanh vùng biển số và nhận dạng các ký tự trên biển số từ video. Toàn bộ luồng xử lý (pipeline) được thiết kế tối ưu hiệu năng và đóng gói hoàn chỉnh bằng Docker.
 
-<div align="center">
-  <video src="https://github.com/Tien10Diem/Detect_License_plate/raw/main/sample/output/output.mp4" width="100%" controls>
-    Trình duyệt không hỗ trợ xem video.
-  </video>
-</div>
+## Demo Video
+
+<video src="https://raw.githubusercontent.com/Tien10Diem/Detect_License_plate/main/sample/output/output.mp4" controls width="600"></video>
+
 ## Tính năng kỹ thuật nổi bật
 
 - **Phát hiện & Theo dõi xe (Vehicle Detection & Tracking):** Ứng dụng mô hình YOLO26m kết hợp thuật toán ByteTrack để phát hiện và duy trì ID độc nhất cho từng phương tiện xuyên suốt video.
