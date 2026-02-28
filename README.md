@@ -2,7 +2,9 @@
 
 This is a comprehensive project applying Computer Vision to detect vehicles, localize license plates, and recognize characters on license plates from videos. The entire processing pipeline is performance-optimized and fully containerized using Docker.
 
-<video src="sample/output/output.mp4" width="100%" controls></video>
+## Demo Video
+
+[Click here to watch the demo](https://raw.githubusercontent.com/Tien10Diem/Detect_License_plate/main/sample/output/output.mp4)
 ## Key Technical Features
 
 - **Vehicle Detection & Tracking:** Utilizes the YOLO26m model combined with the ByteTrack algorithm to detect and maintain unique IDs for each vehicle throughout the video.
