@@ -4,7 +4,7 @@
 
 ## Demo Video
 
-<video src="https://raw.githubusercontent.com/Tien10Diem/Detect_License_plate/main/sample/output/output.mp4" controls width="600"></video>
+[![Watch the demo](https://img.youtube.com/vi/VIDEO_ID/0.jpg)](https://youtu.be/ZiOYWaxIXFE)
 
 ## Tính năng kỹ thuật nổi bật
 
