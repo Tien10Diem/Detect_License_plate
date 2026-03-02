@@ -1,33 +1,54 @@
-# License Plate Recognition (LPR) and Tracking System with YOLO26 and Docker
+# License Plate Recognition (LPR) System with YOLO and Docker
 
-This is a comprehensive project applying Computer Vision to detect vehicles, localize license plates, and recognize characters on license plates from videos. The entire processing pipeline is performance-optimized and fully containerized using Docker.
+This is a comprehensive Computer Vision project for detecting vehicles, locating license plates, and recognizing characters on license plates from a video source. The entire processing pipeline is designed for optimal performance and is fully containerized using Docker. The project includes two model versions: `base` and `improved` (enhanced with techniques like CBAM).
 
 ## Demo Video
 
 [![Watch the demo](https://img.youtube.com/vi/VIDEO_ID/0.jpg)](https://youtu.be/ZiOYWaxIXFE)
+
+## Base vs. Improved Comparison
+
+- base video:
+![base](sample/output/output_base.mp4)
+
+- improved vs. base license plate detection (conf=0.5 and iou=0.5):
+![improved](sample/lp_imp.jpg)
+![base](sample/lp_base.jpg)
+
+- improved vs. base character recognition (conf=0.5 and iou=0.5):
+![improved](sample/imp_rec.jpg)
+![base](sample/base_rec.jpg)
+
+
 ## Key Technical Features
 
-- **Vehicle Detection & Tracking:** Utilizes the YOLO26m model combined with the ByteTrack algorithm to detect and maintain unique IDs for each vehicle throughout the video.
-- **License Plate Detection:** Accurately extracts (crops) the license plate region based on the vehicle's bounding box coordinates.
-- **Character Recognition (OCR) & Spatial Sorting:** - Recognizes characters and applies a dynamic line grouping algorithm (handling tilted license plates).
-  - Performance optimization: Only executes the OCR model every 5 frames to reduce computational load.
-- **Data Interpolation:** Applies Linear Interpolation via Pandas to fill in missing frames (missed detections), ensuring smooth trajectories. Integrated a sliding window size control technique to prevent data compatibility exceptions.
+- **Vehicle Detection & Tracking:** Uses a YOLO model combined with the ByteTrack algorithm to detect and maintain a unique ID for each vehicle throughout the video.
+- **License Plate Detection:** Accurately crops the license plate region based on the vehicle's bounding box coordinates.
+- **Character Recognition (OCR) & Spatial Arrangement:** Recognizes characters and applies a dynamic line grouping algorithm to handle slanted license plates.
+- **Performance Optimization:** The OCR model is executed only once every 5 frames to reduce computational load.
+- **Data Interpolation:** Utilizes Linear Interpolation via Pandas to fill in missing frames from tracking, ensuring a smooth trajectory.
 
 ## Project Structure
 
 ```text
 .
-├── data/                 # Scripts and configuration data for detection/recognition
+├── data/                 # Data and configuration scripts for the models
 ├── docker-compose.yml    # Docker Compose configuration (including GPU setup)
-├── Dockerfile            # Environment blueprint for the application
-├── requirements.txt      # Required Python libraries (ultralytics, pandas, onnxruntime-gpu...)
+├── Dockerfile            # Docker environment blueprint
+├── requirements.txt      # Required Python libraries
 ├── sample/               # Contains input videos (raw_video/) and output videos (output/)
 ├── scripts/              # Scripts for model training
+│   ├── base/             # Training scripts for the base model
+│   └── improved/         # Training scripts for the improved model
 ├── src/                  # Core source code
-│   ├── models/           # Model architecture definitions and custom blocks
-│   ├── pipeline/         # Main processing pipeline logic (inference.py)
-│   └── utils/            # Utility and support functions
-└── weights/              # Trained model weights (.onnx)
+│   ├── models/           # Model architecture definitions, configs, and custom blocks (CBAM)
+│   ├── pipeline/         # Main processing logic (inference.py, inference_teacher.py)
+│   └── utils/            # Utility functions (e.g., convertOnnx.py)
+└── weights/              # Trained model weights
+    ├── base/             # Weights for the base models
+    ├── model_license_plate/ # Weights for the license plate detection model
+    ├── model_numbers/    # Weights for the character recognition model
+    └── model_vehicle/    # Weights for the vehicle detection model
 ```
 
 ## Getting Started
@@ -40,40 +61,52 @@ This is a comprehensive project applying Computer Vision to detect vehicles, loc
     cd <repository-directory>
     ```
 
-2.  **Install dependencies:**
+2.  **Install libraries:**
     ```bash
     pip install -r requirements.txt
     ```
+    The main libraries include `ultralytics`, `torch`, `opencv-python`, `pandas`, and `onnxruntime-gpu`.
 
 ## Usage (Inference)
 
-### Method 1: Running via Docker
-This method automatically sets up the environment and GPU configuration without complex installations on the host machine. Place the video in `sample/raw_video/` and run:
+### Method 1: Run via Docker
+This method automatically sets up the environment and GPU configuration. Place your video in `sample/raw_video/` and run:
 
 ```bash
 docker-compose up --build
 ```
-The resulting video will be automatically exported to the `sample/output/` directory.
+The resulting video will be saved in the `sample/output/` directory.
 
-### Method 2: Running directly with Python
-Use the `inference.py` script with command-line arguments (`argparse`) to flexibly adjust the input/output pipeline:
+### Method 2: Run directly with Python
+Use the `src/pipeline/inference.py` script with parameters for customization. The following command uses the default ONNX weights to process a video:
 
 ```bash
 python src/pipeline/inference.py --video_path sample/raw_video/video_cut.mp4 --output_path sample/output/result.mp4 --gap 150
 ```
 
+## Utilities
+
+### Cut Video
+
+The project provides the `cutvideo.py` script to cut a segment from a source video file, which is useful for quick testing.
+
 ## Training
 
-Scripts to train individual models are located in the `scripts/` directory.
+Scripts for training the individual models are located in the `scripts/` directory. You can choose to train the `base` or `improved` version based on your needs.
 
--   `scripts/train_vehicle.py`: Train the vehicle detection model.
--   `scripts/train_lp.py`: Train the license plate detection model.
--   `scripts/train_reNum.py`: Train the character recognition (OCR) model.
+-   `scripts/base/base_vehicle.py`: Train the vehicle detection model (base version).
+-   `scripts/improved/train_vehicle.py`: Train the vehicle detection model (improved version).
+-   The same applies to the `..._lp.py` (license plate detection) and `..._reNum.py` (character recognition) scripts.
 
 ## Models
 
-This project uses the **YOLO26m** architecture for all 3 tasks: vehicle detection, license plate localization, and character recognition. Model configurations and custom blocks can be found in the `src/models/` directory. To optimize inference speed in a production environment, the distributed weights in the `weights/` directory have been converted to and operate under the **ONNX Runtime** format.
+The project uses three separate YOLO models for each task:
+1.  **Vehicle Detection:** `vehicle_detector` model.
+2.  **License Plate Detection:** `plate_detector` model.
+3.  **Character Recognition:** `recognize_number` model.
 
-### Important Notes:
-- The character recognition model is currently sub-optimal for motorcycles but performs quite well on cars.
-- The data interpolation process is rather slow, especially for frames containing a large number of objects.
+Each model has a `base` and an `improved` version. The `improved` version may use custom architectures like `YOLO26m` with `CBAM` blocks (defined in `src/models/`). For optimal inference speed, it is recommended to use the versions that have been converted to the **ONNX** format.
+
+### Some Notes:
+- The character recognition model performs better on car license plates compared to motorcycle plates.
+- The interpolation process can be slow when there are many objects in the frame.
