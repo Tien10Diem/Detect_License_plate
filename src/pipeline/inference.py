@@ -19,6 +19,7 @@ def agrs():
     parser.add_argument('--weights_character', default=r"weights\model_numbers\best_recognize_number.onnx", type=str, help='path to character detection model')
     parser.add_argument('--video_path', default=r"sample\raw_video\video_cut.mp4", type=str, help='path to input video')
     parser.add_argument('--output_path', default=r"sample\output\output.mp4", type=str, help='path to output video')
+    parser.add_argument('--gap', default=150, type=int, help='maximum gap (in frames) for interpolation')
     return parser.parse_args()
 
 class detect:
@@ -123,9 +124,14 @@ class detect:
             
             # Biến đổi frame thành index để dễ dàng nội suy
             track_data = track_data.set_index('frame').reindex(full_frames) # reindex để thêm đủ các frame liên tiếp (điền NaN cho các frame thiếu)
-            track_data[['x1', 'y1', 'x2', 'y2']] = track_data[['x1', 'y1', 'x2', 'y2']].interpolate(method='linear', limit= gap) # nội suy tuyến tính với giới hạn gap
-            track_data['track_id'] = track_id  
+           # Kiểm tra nếu dữ liệu đủ dài thì mới nội suy (interpolate)
+            if len(track_data) > (gap + 1):
+                track_data[['x1', 'y1', 'x2', 'y2']] = track_data[['x1', 'y1', 'x2', 'y2']].interpolate(method='linear', limit=gap)
+            else:
+                # Nếu dữ liệu quá ngắn, chỉ dùng giá trị trước đó để lấp đầy (ffill/bfill)
+                track_data[['x1', 'y1', 'x2', 'y2']] = track_data[['x1', 'y1', 'x2', 'y2']].ffill().bfill()
             
+            track_data['track_id'] = track_id  
             # Biến đổi index thành cột 'frame'
             track_data = track_data.reset_index() 
             track_data = track_data.rename(columns={'index': 'frame'})
@@ -163,7 +169,18 @@ class detect:
             
             # Biến đổi frame thành index để dễ dàng nội suy
             track_data = track_data.set_index('frame').reindex(full_frames) # reindex để thêm đủ các frame liên tiếp (điền NaN cho các frame thiếu)
-            track_data[['x1', 'y1', 'x2', 'y2']] = track_data[['x1', 'y1', 'x2', 'y2']].interpolate(method='linear', limit= gap) # nội suy tuyến tính với giới hạn gap
+            
+            # --- MODEL SURGERY tại dòng 172 (Hàm interpolated_license) ---
+            if len(track_data) > (gap + 1):
+                track_data[['x1', 'y1', 'x2', 'y2']] = track_data[['x1', 'y1', 'x2', 'y2']].interpolate(
+                    method='linear', 
+                    limit=gap
+                )
+            else:
+                # Nếu dữ liệu biển số quá ngắn, dùng ffill/bfill để bù đắp
+                track_data[['x1', 'y1', 'x2', 'y2']] = track_data[['x1', 'y1', 'x2', 'y2']].ffill().bfill()
+
+            
             track_data['track_id'] = track_id  
             
             # Biến đổi index thành cột 'frame'
